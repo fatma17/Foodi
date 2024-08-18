@@ -1,0 +1,230 @@
+﻿@model IEnumerable<Category>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap5.css">
+
+
+<div class="row ms-3 me-3 mt-4 border shadow-ms rounded-3">
+
+    <div class="d-flex justify-content-between align-items-center" style="color:#373636;background-color:#f9fafd;">
+        <h1 class="m-4">Categorise </h1>
+        <a class="btn btn-primary btn-lg m-4" asp-action="Create" style="width:8%; font-weight:500;">
+            <i class="fa-solid fa-plus ms-1"></i> Add
+        </a>
+    </div>
+
+    
+
+    @if (!Model.Any())
+    {
+        <div class="alert mt-4 mb-4" style="background-color:#fcb57d;">
+            <div class="d-flex">
+                <i class="fa-solid fa-circle-exclamation fa-lg me-2" style="line-height:30px;"></i>
+                <h4 class="alert-heading d-flex"> No category found! </h4>
+            </div>
+            <p class="mb-0"> No categories were added yet</p>
+        </div>
+    }
+
+    else
+    {
+        <div class="p-4 ps-5 pe-5">
+            <table id="datatable" class="table">
+                <thead>
+                    <tr class="text-uppercase">
+                        <th>Name</th>
+                        <th>Created On</th>
+                        <th class="no-export">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr id="category-@category.Id" class="">
+                            <td>
+                                <div class="ms-1">
+                                    @category.Name
+                                </div>
+                            </td>
+                            <td style="width:35%;">
+                                 @category.CreatedDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="no-export">
+                                <div class="dropdown ms-4">
+                                    <a class="text-dark" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" asp-action="Update" asp-route-id="@category.Id">Edit</a></li>
+                                        <li><a class="dropdown-item  js-delete" href="#" data-id="@category.Id">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div> 
+    }
+
+</div> 
+
+
+
+
+
+
+@section scripts {
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src=" https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+
+            var message = '@TempData["Message"]';
+            var messageType = '@TempData["MessageType"]';
+
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            if (message) {
+                toastr[messageType](message);
+            }
+
+
+            var table = $('#datatable').DataTable({
+                pageLength: 4,
+                info: false,
+                ordering: false,
+                layout: {
+                    topEnd: {
+                        buttons: [
+                            {
+                                extend: 'collection',
+                                className: 'btn-outline-primary',
+                                text: 'Export',
+                                buttons: [
+                                    {
+                                        extend: 'pdfHtml5',
+                                        text: 'PDF',
+                                        exportOptions: {
+                                            columns: ':not(.no-export)'
+                                        }
+                                    },
+                                    {
+                                        extend: 'csvHtml5',
+                                        text: 'CSV',
+                                        exportOptions: {
+                                            columns: ':not(.no-export)'
+                                        }
+                                    },
+                                    {
+                                        extend: 'excelHtml5',
+                                        text: 'Excel',
+                                        exportOptions: {
+                                            columns: ':not(.no-export)'
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                    },
+                    topStart: {
+                        search: {
+                            text: '<i class="fa-solid fa-magnifying-glass"></i> _INPUT_',
+                            placeholder: 'Search',
+                        }
+                    }
+                }
+            });
+
+            $('#datatable tbody').on('click', '.js-delete', function () {
+               
+                var btn = $(this);
+                var id = $(this).data("id");
+                var $row = $(this).closest('tr');
+
+                const swal = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-danger mx-2",
+                        cancelButton: "btn btn-success"
+                    },
+                    buttonsStyling: false
+                });
+
+
+                swal.fire({
+                    title: "Are you sure you want to delete this Category?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel!",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/Categories/Delete`,        // `/Categories/Delete/${btn.data('id')}`
+                            method: 'DELETE',
+                            contentType: 'application/json',
+                            data: JSON.stringify(id),
+                            success: function (response) {
+                                if (response.success) {
+                                    btn.parents('tr').fadeOut();
+                                    //table.row($row).remove().draw();
+                                    swal.fire({
+                                        title: "Deleted!",
+                                        text: "Category deleted successfully",
+                                        icon: "success",
+                                    });
+                                }
+                                else {
+                                    swal.fire(
+                                        'Oooops...',
+                                        'Something went wrong.',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function () {
+                                swal.fire(
+                                    'Oooops...',
+                                    'Something went wrong.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+
+                });
+
+
+            });
+
+        });
+        
+    </script>
+} 

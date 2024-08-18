@@ -1,0 +1,75 @@
+﻿
+@using Foodi.Core.Enums
+@model IEnumerable<Foodi.Core.ViewModels.OrderHistoryViewModel>
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<div class="row m-5 border shadow-ms rounded-3">
+
+    <div class="overflow-hidden" style="background-color:#f9fafd;">
+        <h2 class="m-4">Your Orders History</h2>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p class="ms-4 mt-4">
+            No Orders! 
+            <a style="color:#ff7100;" href="/Products/Menu/">
+                Order Now
+            </a>
+        </p>
+    }
+    else
+    {
+        <div class="p-4">
+            <table class="table">
+                <thead>
+                    <tr class="text-uppercase">
+                        <th class="ps-3 pe-0">Order</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr class="" id="order-@order.Id">
+                            <td>
+                                <div class="ms-3">
+                                    <a class="text-decoration-none" asp-action="View" asp-route-id="@order.Id">#@order.Id</a>
+                                </div>
+                            </td>
+                            <td class="">
+                                @order.OrderDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                <div>
+                                    <span class="badge rounded-pill order-status-badge badge-@(order.Status == OrderStatus.Pending ? "primary" :
+                                                                                       order.Status == OrderStatus.Completed ? "success" :"danger")">
+                                        @order.Status
+                                        <i class="fa-solid order-status-icon fa-@(order.Status == OrderStatus.Pending ? "rotate-right":
+                                                                                       order.Status == OrderStatus.Completed ? "check": "ban")"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ms-1">
+                                    $@order.Total
+                                </div>
+                            </td>
+                            <td class="ps-3" style="width:15%;">
+                                @order.PaymentMethod
+                            </td>
+                           
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>

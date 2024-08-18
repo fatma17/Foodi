@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @UserManager.GetUserAsync(User).Result.FirstName
+            </a>
+            <div class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="navbarDropdown">
+                <div class ="d-flex mt-3 ms-3">
+                    <i class="fa-solid fa-circle-user fa-3x"></i>
+                    <div class="ms-2 me-2">
+                        <h5 class="mb-0">@UserManager.GetUserAsync(User).Result.FirstName</h5>
+                        <p class="mb-0">@UserManager.GetUserAsync(User).Result.Email</p>
+                    </div>
+                </div>
+                <hr />
+                <a class="dropdown-item" href="/Identity/Account/Manage">
+                    <i class="fa-solid fa-gear fa-xl me-2"></i>
+                    Manage Account
+                </a>
+                <a class="dropdown-item mt-2" href="/Orders/History">
+                    <i class="fa-solid fa-cart-shopping fa-lg me-2"></i>
+                    Order History
+                </a>
+                <hr />
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" method="post" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item">
+                        <i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal fa-lg me-2"></i>
+                        Logout
+                    </button>
+                </form>
+               
+            </div>
+        </li>
+       @*  <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserAsync(User).Result.FirstName</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            </form>
+        </li> *@
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}

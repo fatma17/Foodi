@@ -1,0 +1,27 @@
+﻿@model Foodi.Core.ViewModels.CategoryFormViewModel
+
+@{
+    ViewData["Title"] = "Add a category";
+}
+
+<div class="row ms-3 me-5 pe-3 ps-3 border shadow-ms rounded-3" style="margin-top:50px;">
+    <h3 class="text-primary mt-4"> Add Category </h3>
+    <div class="border-bottom m-2"> </div>
+    <div class="col-6 mt-3" style="width:45%;">
+         <form asp-controller="Categories">
+                <div class="form-group">
+                    <label asp-for="Name" class="required form-label mt-1">Category Name</label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Name">
+                    <small class="text-muted fs-7 ms-2">Category name is required and recommended to be unique.</small>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg mt-4 mb-4" style="width:30%;" >Add</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
+

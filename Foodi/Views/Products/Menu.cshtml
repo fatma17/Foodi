@@ -1,0 +1,80 @@
+﻿@model Foodi.Core.ViewModels.MenuViewModel
+@{
+    ViewData["Title"] = "Menu";
+}
+
+<div class="text-center">
+    <h3>our Menu</h3>
+</div>
+
+<div class="row mt-3">
+    <div class="col-lg-3 border rounded-3">
+        <fieldset>
+            <legend class="mt-4 ps-3">Select Category</legend>
+            <hr />
+            @foreach (var category in Model.Categories)
+            {
+                <div class="form-check mb-2 ps-5">
+                    <input class="form-check-input category-checkbox" type="checkbox" value="@category.Id" id="category-@category.Id">
+                    <label class="form-check-label" for="category-@category.Id">
+                        @category.Name
+                    </label>
+                </div>
+            }
+        </fieldset>
+    </div>
+
+    <div class="col-lg-9">
+        <div class="row" id="foodList">
+            @foreach (var Product in Model.Products)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <a class="card border shadow-sm rounded-3 text-decoration-none mb-3 p-4" asp-controller="Products" asp-action="Details" asp-route-id="@Product.Id">
+                        <img class="mx-auto" src="~/images/@($"{Product.ImageName}")" alt="@Product.Name" style="height:125px;">
+                        <div class="text-center mt-2">
+                            <h5 class="mb-1">@Product.Name</h5>
+                            <hr class="mt-2 mb-2"/>
+                            <p class="fs-5 mb-0">$@Product.Price</p>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".category-checkbox").change(function () {
+                var selectedCategories = [];
+                $(".category-checkbox:checked").each(function () {
+                    selectedCategories.push($(this).val());
+                });
+
+                var url = selectedCategories.length === 0 ? "/Products/GetAllProducts" : "/Products/GetProductsByCategory";
+
+                $.ajax({
+                    url: url,
+                    method: "GET",
+                    data: selectedCategories.length === 0 ? {} : { categoryIds: selectedCategories },
+                    traditional: true,
+                    success: function (data) {
+                        $("#foodList").html(data); //Menu update 
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred while fetching items:", error);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+
+
+
+

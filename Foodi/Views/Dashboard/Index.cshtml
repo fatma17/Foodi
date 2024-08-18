@@ -1,0 +1,150 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row border shadow-ms rounded-3 m-3 mt-4">
+    <div class="overflow-hidden" style="background-color:#f9fafd;">
+        <h3 class="m-3 ms-2">Dashboard</h3>
+    </div>
+   
+    <div class="col-3 p-0">
+        <div class="border shadow-ms p-3">
+            <h4 class="m-2">Orders</h4>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="ps-3 mt-2">
+                    <h4>@Model.OrderCount</h4>
+                </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                     style="color:#17C653 ; background:#DFFFEA ;width:50px;height: 50px; ">
+                    <i class="fa-solid fa-cart-shopping fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 p-0">
+        <div class=" border shadow-ms p-3">
+            <h4 class="m-2">Users</h4>
+            <div class=" d-flex justify-content-between align-items-center">
+                <div class="ps-3 mt-2">
+                    <h4>@Model.UserCount</h4>
+                </div>
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+                     style="color:#7239EA ; background:#e9e2f9;width:50px;height: 50px; ">
+                    <i class="fa-solid fa-user-group fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 p-0">
+        <div class=" border shadow-ms rounded-3 p-3">
+            <h4 class="m-2">Products</h4>
+            <div class=" d-flex justify-content-between align-items-center">
+                <div class="ps-3 mt-2">
+                    <h4>@Model.ProductCount</h4>
+                </div>
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+                     style="color:#ff7100 ; background:#fff1e5;width:50px;height: 50px; ">
+                    <i class="fa-solid fa-tag fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 p-0">
+        <div class=" border shadow-ms rounded-3 p-3">
+            <h4 class="m-2">Categorise</h4>
+            <div class=" d-flex justify-content-between align-items-center">
+                <div class="ps-3 mt-2">
+                    <h4>@Model.CategoryCount</h4>
+                </div>
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+                     style="color:#1B84FF ; background:#E9F3FF;width:50px;height: 50px; ">
+                    <i class="fa-solid fa-layer-group fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-7">
+        <div class="border shadow-ms rounded-3 ms-3">
+            <div class="overflow-hidden"  style="background-color:#f9fafd;">
+                 <h3 class="m-4">Top Best Sellers</h3>
+            </div>
+            <div class="p-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Sales Count</th>
+                            <th>Total Revenue</th>
+                            <th>Last Sale Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var product in Model.Bestsellers)
+                        {
+                            <tr>
+                                <td>@product.Name</td>
+                                <td>
+                                    <div class="ms-3">@product.SalesCount</div>
+                                </td>
+                                <td>@product.TotalRevenue</td>
+                                <td>@product.LastSaleDate.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-5 ps-1">
+        <div class="border shadow-ms rounded-3 me-3">
+            <div class="overflow-hidden" style="background-color:#f9fafd;">
+                <h3 class="m-4">Bar Chart</h3>
+            </div>
+            <div class="mt-4 mb-4">
+                <canvas id="bestSellersChart" width="200" height="110" style="width:197px;height:110px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var ctx = document.getElementById('bestSellersChart').getContext('2d');
+            var chartData = {
+                labels: @Html.Raw(Json.Serialize(Model.Bestsellers.Select(p => p.Name))),
+                datasets: [{
+                    label: 'Sales Count',
+                    data: @Html.Raw(Json.Serialize(Model.Bestsellers.Select(p => p.SalesCount))),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+            var bestSellersChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+

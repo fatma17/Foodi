@@ -1,0 +1,29 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="row ms-3 me-5 pe-3 ps-3 border shadow-ms rounded-3" style="margin-top:50px;">
+    <h3 class="text-primary mt-4">
+        Edit Category
+    </h3>
+    <div class="border-bottom m-2">
+    </div>
+    <div class="col-6 mt-3" style="width:45%;">
+        <form asp-controller="Categories">
+            <div class="form-group">
+                <label asp-for="Name" class="required form-label mt-1">Category Name</label>
+                <input type="text" class="form-control" asp-for="Name" placeholder="Name">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="text-muted fs-7 ms-2">category name is required and recommended to be unique.</div>
+            <button type="submit" class="btn btn-primary btn-lg my-4 me-2" style="width:30%;">Save</button>
+            <button type="button" class="btn btn-second btn-lg my-4" style="width:30%;" onclick="location.href='@Url.Action("Index", "Categories")'">Cancel</button>
+        </form>
+    </div>
+</>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

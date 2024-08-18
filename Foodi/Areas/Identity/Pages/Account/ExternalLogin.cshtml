@@ -1,0 +1,47 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h4>
+<hr />
+
+<p id="external-login-description" class="text-info">
+    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+    Please enter your information for this site below and click the Register button to finish
+    logging in.
+</p>
+
+<div class="row  p-2">
+    <div class="col-md-4 ">
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control ps-2" autocomplete="email" placeholder="Please enter your email." />
+                <label asp-for="Input.Email" class="form-label ms-2"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div> 
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control ps-2" />
+                <label asp-for="Input.FirstName" class="form-label ms-2 "></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control ps-2" />
+                <label asp-for="Input.LastName" class="form-label ms-2 "></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            
+
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

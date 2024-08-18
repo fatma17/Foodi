@@ -1,0 +1,125 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero">
+    <div class="overflow-hidden">
+        <div class="row align-items-center ">
+            <div class="col-lg-6 hero-content">
+                <h3 class="display-3 fw-bold large-text"> Order your favourite <span style="color:#ff7100;">food</span> here</h3>
+                <p class="fs-4 mb-5 mt-4">Choose from a diverse menu featuring a delecable array of dishes.Our mission is to satisfy your cravings and elevate your dining experience , one delicious meal at a time.</p>
+                <div class="d-grid gap-2 d-sm-flex">
+                    <a class="btn btn-orange btn-lg px-4 me-md-2 text-decoration-none" asp-controller="Products" asp-action="Menu">
+                        Order Now <i class="fa-solid fa-angles-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img class="img-fluid mx-auto"src="~/images/Delivery.png" alt=" ">
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="Service">
+    <div class="row justify-content-center mx-auto pt-5 pb-5 ">
+        <div class="text-center pb-4">
+            <h5>Our Services</h5>
+            <h1>Why Choose Us</h1>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm " style="border-radius:20px;">
+                <img src="~/images/hamburger.png" class="mx-auto" style="width:70%;" alt="...">
+                <div class="text-center p-3">
+                    <h4 class="fw-bold">Fresh Food</h4>
+                    <p>
+                        The Best Quality of Food for You. Fast, Fresh, and Delicious.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm" style="border-radius:20px;">
+                <img src="~/images/take-away.png" class="mx-auto" style="width:70%;" alt="..." />
+                <div class="text-center p-3">
+                    <h4 class="fw-bold">Fast Delivery</h4>
+                    <p>
+                        Delivery Will Always Be On Time, Ensuring Meal Arrives Fresh.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow-sm" style="border-radius:20px;">
+                <img src="~/images/Wallet.png" class="mx-auto" style="width:70%;" alt="..." />
+                <div class="text-center p-3">
+                    <h4 class="fw-bold">Easy Payment</h4>
+                    <p>
+                        Choose How You Pay: Online or Cash, for Easy Ordering.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="BestProducts">
+    @Html.Partial("_BestProducts", Model.BestProducts)
+</section>
+
+<section class="contact" id="Contact">
+    @Html.Partial("~/Views/Contacts/_ContactForm.cshtml", Model.ContactUs)
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            $('#contactForm').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Create", "Contacts")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            toastr["success"]("Thank you for contacting us!");
+
+                            //$('#resultMessage').html('<div class="alert alert-success">' + response.message + '</div>');
+                            //$('#contactForm')[0].reset();
+                            //$('span.text-danger').text('');
+
+                        } else {
+                               $('#contact').html(result);
+
+                            // $('span.text-danger').text('');
+                            // $.each(response.errors, function (key, value) {
+                            //     $('span[data-valmsg-for="' + key + '"]').text(value[0]);
+                            // });
+                        }
+                    },
+                     error: function () {
+                        toastr["error"]("An error occurred while submitting your request. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+}

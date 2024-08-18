@@ -1,0 +1,134 @@
+﻿@using Foodi.Core.Enums
+@model OrderDetailsViewModel
+@{
+    ViewData["Title"] = Model.Id;
+}
+
+@if (User.IsInRole(AppRoles.User))
+{
+    <div class="d-flex justify-content-end">
+                        @* btn-primary *@
+        <button class="btn btn-second  btn-sm me-4" id="printButton"><i class="fa-solid fa-file-arrow-down me-1"></i>Download PDF</button>
+    </div>
+}
+<div class="row ms-3 me-3 mt-2 border shadow-ms rounded-3">
+   
+    <div class="d-flex justify-content-between align-items-center" style="background-color:#f9fafd;">
+       <div class="mt-3 ms-3 mb-3">
+            <h4 class="mb-0">Order Details : #@Model.Id</h4>
+            <p class="fs-10 mb-2 ms-1">@Model.OrderDate</p>
+            <div class="text-muted ms-1">
+               
+                    @if (User.IsInRole(AppRoles.Admin))
+                    {
+                        <div class="mb-1">
+                            <strong>Customer ID : <a class="fw-bold" href="#!"> @Model.CustomerId</a></strong>
+                        </div>
+                    }
+                <div class="mb-1">
+                    <strong>Status : </strong>
+                    <div class="badge rounded-pill fs-11 badge-@(Model.Status == OrderStatus.Pending ? "primary" : Model.Status == OrderStatus.Completed ? "success" :"danger")">
+                        @Model.Status
+                        <i class="fa-solid fa- fa-@(Model.Status == OrderStatus.Pending ? "rotate-right" : Model.Status == OrderStatus.Completed ? "check": "ban")"></i>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <strong>Payment Method : @Model.PaymentMethod </strong>
+                </div>
+                <div class="mb-1">
+                    <strong>Total : @Model.Total$</strong>
+                </div>
+            </div>
+       </div>
+
+    </div>
+
+    <div class="p-4">
+        <table class="table mb-4">
+            <thead>
+                <tr>
+                    <th>Items</th>
+                    <th>Quantity</th>
+                    <th>UnitPrice</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>
+                            @item.ProductName
+                        </td>
+                        <td>
+                            <div class="ms-4">
+                                @item.Quantity
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ms-2">
+                                @item.Price$
+                            </div>
+                        </td>
+                        <td>
+                            @(item.Quantity * item.Price)$
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+         </table>
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#printButton').click(function () {
+                var Id = @Model.Id;
+                console.error(Id);
+
+                $.ajax({
+                    url: `/Pdf/GeneratePdf/${Id}`,
+                    type: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'   // Blob (Binary Large Object) used to represent binary data that can be large in size (such as files, images, or videos).
+                    },
+                    success: function (data) {
+                        if (data) {
+
+                            // window.location.href = response.filePath;
+
+                            // var blob = new Blob([response], { type: 'application/pdf' });
+                            // var link = document.createElement('a');
+                            // link.href = window.URL.createObjectURL(blob);
+                            // link.download = "Invoice.pdf";
+                            // link.click()
+
+                            var link = document.createElement('a');
+                            var url = window.URL.createObjectURL(data);
+                            link.href = url;
+                            link.download = 'Invoice.pdf'; 
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url); 
+
+
+                        } else {
+                            console.error("Error downloading PDF");
+                        }
+                       
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred while generating the PDF:", error);
+                    }
+                });
+            });
+        });
+    </script>
+
+}

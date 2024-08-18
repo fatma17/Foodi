@@ -1,0 +1,119 @@
+﻿@* [HttpPost]
+        public async Task<IActionResult>
+    AddCategory(string name)
+    {
+
+    //if (ModelState.IsValid)
+    //{
+    //    if (_context.Categories.Any(c => c.Name == model.Name))
+    //    {
+    //        return Json(new { success = false, message = "Category name already exists." });
+    //    }
+
+    //    _context.Categories.Add(model);
+    //    _context.SaveChanges();
+    //    return Json(new { success = true });
+    //}
+
+    //return Json(new { success = false, message = "Invalid data." });
+    if (string.IsNullOrEmpty(name))
+    {
+    return Json(new { success = false, message = "Category name is required" });
+    }
+
+    var category = new CategoryFormViewModel { Name = name };
+    var r =  await _categoriesService.Create(category);
+
+    return Json(new { success = true, category = new { r.Id, r.Name } });
+    }
+
+
+ *@
+
+
+
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCategoryForm">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="name" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* @model CategoryFormViewModel
+<form id="addCategoryForm" asp-action="">
+    <div class="mb-5">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control" placeholder="Name" asp-for="Name" />
+            <label asp-for="Name"></label>
+        </div>
+        <span asp-validation-for="Name" class="text-danger d-block"></span>
+    </div>
+
+   <div class="modal-footer px-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">
+            <span class="indicator-label">
+                Save
+            </span>
+            <span class="indicator-progress">
+                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+        </button>
+    </div>
+</form> *@
+
+
+<script>
+
+
+
+    $(document).ready(function () {
+
+        $('#addCategoryForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: '@Url.Action("AddCategory", "Categories")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        alert('Category added successfully');
+                        $('#addCategoryModal').modal('hide');
+                        // var newCategory = '<tr><td>' + response.category.Id + '</td><td>' + response.category.Name + '</td></tr>';
+                        table.row.add({
+                            name: response.category.name
+                                
+                        }).draw();
+
+                    } else {
+                        alert('Error adding category');
+                    }
+                },
+                error: function () {
+                    alert('Error adding category');
+                }
+            });
+        });
+    });
+ </script>

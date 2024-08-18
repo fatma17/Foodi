@@ -1,0 +1,225 @@
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,900,700);
+body {
+    margin-bottom: 60px;
+    font-family: 'Lato', sans-serif;
+}
+
+/*start-badge*/
+.badge-primary {
+    color:#215cac;
+    background-color: #d9e7fa;
+}
+
+.badge-success {
+    color: #00894f;
+    background-color: #d9f8eb;
+}
+
+.badge-danger {
+    color: #b81800;
+    background-color: #ffe0db;
+}
+/*End-badge*/
+
+
+/* start Edit bootstrap*/
+.btn {
+    text-transform: none !important;
+}
+
+.form-control {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6;
+    padding: 0.375rem 0.75rem;
+    background-color: white;
+    border-radius: 0.375rem;
+}
+.form-select {
+    border: 1px solid #dee2e6;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+    background-color: white;
+    border-radius: 0.375rem;
+}
+/*End bootstrap*/
+
+
+
+/* start sidebar */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 240px;
+    background: #373636;
+    padding: 6px 14px;
+}
+
+.sidebar .logo-content .logo{
+    color:#fff;
+    display:flex;
+    height:50px;
+    width:100%;
+    align-items:center;
+}
+
+.logo-content .logo i{
+    font-size:28px ; 
+    margin-right:5px;
+}
+
+
+.logo-content .logo .logo-name {
+    font-size: 20px;
+    /*font-weight: 400;*/
+}
+
+/* --- icon side right logo*/
+.sidebar #btn {
+    position: absolute;
+    color: #fff;
+    left: 90%;
+    top: 6px;
+    font-size: 20px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 50px;
+    transform: translateX(-50%);
+    border-radius: 0.375rem;
+}
+
+.sidebar ul {
+    margin-top: 25px;
+    margin-left: -42px;
+}
+
+
+.sidebar ul li{
+    position:relative;
+    height:50px;
+    width:100% ; 
+    list-style:none ; 
+    line-height:50px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    border-radius: 12px;
+}
+
+.sidebar ul li a:hover {
+    color: #11101d;
+    background: #fff;
+}
+
+.sidebar ul li a i {
+    height: 50px;
+    min-width: 50px;
+    border-radius: 12px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.links-name {
+    font-size: 20px;
+}
+
+.sidebar .profile-content{
+    position:absolute;
+    color:#fff ; 
+    bottom : 0 ; 
+    left : 0 ; 
+    width:100% ; 
+}
+
+.sidebar .profile-content .profile {
+    position: relative;
+    padding: 0px 6px;
+    height: 60px;
+}
+
+.profile-content .profile .profile-details{
+    display:flex;
+    align-items:center;
+}
+
+
+.profile .profile-details img{
+    height:45px ; 
+    width:45px;
+    object-fit: cover ;
+    border-radius:12px;
+}
+
+.profile .profile-details .name-job{
+    margin-left:10px;
+}
+
+.profile .profile-details .name{
+    font-size  : 15px ;
+    font-weight:400 ; 
+}
+
+.profile .profile-details .job {
+    font-size: 12px;
+ 
+}
+
+.profile #log-out {
+    position: absolute;
+    left: 88%;
+    bottom: 5px;
+    transform: translateX(-50%);
+    min-width: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    border-radius: 12px;
+}
+
+.home-content{
+    position:absolute;
+    height:100% ; 
+    width: calc(100% - 240px);
+    left:240px;
+}
+
+/* End sidebar */
+
+
+/*.home-content .text {
+    font-size: 25px;
+    font-weight: 500;
+    color: #1d1b31;
+    margin:12px ;
+}*/
+
+
+.required:after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: var(--bs-danger);
+    padding-left: 0.25rem;
+    font-weight: 600;
+}

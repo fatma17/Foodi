@@ -1,0 +1,208 @@
+﻿@using Foodi.Core.Enums
+@model Foodi.Core.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+@if (!Model.CartItems.Any())
+{
+    <div class="row justify-content-center align-items-center">
+        <div class="col-6">
+            <div class="centered-div text-center">
+                <img src="~/images/cartempty.png" style="width:50%;" />
+                <h2 class="mb-0">Your cart is empty</h2>
+                <p>Looks like you haven't added anything to your cart yet.</p>
+                <div class="mb-5 mt-4">
+                    <a class="btn btn-orange btn-lg px-4 me-md-2 text-decoration-none" asp-controller="Products" asp-action="Menu">
+                        Order Now <i class="fa-solid fa-angles-right"></i>
+                    </a>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    <h1 class="text-center">Your Cart</h1>
+    <div class="row mt-4 border shadow-sm p-5">
+        <div class="col-lg-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <tr id="cart-@item.Id">
+                            <td>
+                                <div class="d-flex">
+                                    <div class="pe-2">
+                                        <img src="~/images/@($"{item.Product.ImageName}")" alt="@item.Product.ImageName" style="max-width:100px" />
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        @item.Product.Name
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <div class="d-inline-flex">
+                                    <button class="btn btn-sm btn-secondary" onclick="updateQuantity(@item.Id, -1,@item.Product.Price)"> <i class="fa-solid fa-minus"></i> </button>
+                                    <span id="quantity-@item.Id" class="border" style="padding:1px 8px;">@item.Quantity</span>
+                                    <button class="btn btn-sm btn-secondary" onclick="updateQuantity(@item.Id, 1,@item.Product.Price)"> <i class="fa-solid fa-plus"></i> </button>
+                                </div>
+                            </td>
+                            <td id="UnitPrice-@item.Id" data-price="@item.Product.Price" style="vertical-align: middle;">
+                                $@item.Product.Price
+                                <span style="display: none;">@item.Product.Price</span>
+                            </td>
+                            <td id="total-@item.Id" style="vertical-align: middle;">
+                                $@(item.Quantity * item.Product.Price)
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <a class="js-delete" data-id="@item.Id">
+                                    <i class="fa-solid fa-trash-can fa-lg" style="color: #c1c1c1;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="border p-4 ms-5 mt-3">
+                <h2>Order Summary</h2>
+                <hr />
+              
+                <div class="d-flex mt-3">
+                    <h4>Total: $</h4>
+                    <h4 id="overall-total">@Model.Amount</h4>
+                </div>
+                <hr />
+
+                <form asp-controller="Payments" asp-action="ProcessPayment" method="post">
+
+                    <div>
+                        <fieldset>
+                            <h5 class="mt-1 mb-2">Payment Method</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodCash" value="@PaymentMethod.Cash" checked onchange="togglePaymentFields()">
+                                <label class="form-check-label" for="paymentMethodCash">Cash</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodCredit" value="@PaymentMethod.Credit" onchange="togglePaymentFields()">
+                                <label class="form-check-label" for="paymentMethodCredit">Credit</label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <button type="submit" class="btn btn-orange btn-lg w-100 mt-4">Check out</button>
+
+                </form>
+
+                
+            </div>
+        </div>
+
+    </div>
+    
+}
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var itemId = $(this).data("id");
+                console.log("Item ID: ", itemId);
+
+                var currentQuantity = parseInt(document.getElementById("quantity-" + itemId).innerText);
+                var unitpriceText = document.getElementById("UnitPrice-" + itemId).querySelector("span").innerText;
+                var unitprice = parseFloat(unitpriceText);
+
+                $.ajax({
+                    url: `/Carts/Delete/${itemId}`,
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    //data: JSON.stringify(data),
+                    success: function () {
+                        console.log(itemId,);
+
+                        if ($('.js-delete').length === 1) 
+                        {
+                            location.reload();
+                        }
+                        else 
+                        {
+                            $('#cart-' + itemId).remove();
+                            updateTotalPrice(itemId, currentQuantity * (-1), unitprice);
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+            });
+        });
+        function updateQuantity(itemId, change ,unitprice) {
+            
+            var currentQuantity = parseInt(document.getElementById("quantity-" + itemId).innerText);
+
+            // var unitpriceText = document.getElementById("UnitPrice-" + itemId).querySelector("span").innerText;
+            // var unitprice = parseFloat(unitpriceText);
+
+            if (currentQuantity + change < 1) {
+                console.error("Error: Quantity cannot be less than 1.");
+                return; 
+            }
+
+            $.ajax({
+                url: "/Carts/UpdateQuantity",
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({ Id: itemId, change: change}),
+                success: function (response) {
+                    console.log("Response received:", response);
+                    document.getElementById("quantity-" + itemId).innerText = response.quantity;
+                    document.getElementById("total-" + itemId).innerText = "$"+(response.quantity * unitprice);
+                    console.error(unitprice);
+                    updateTotalPrice(itemId, change, unitprice);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + xhr.status);
+                }
+            });
+
+        }
+        function updateTotalPrice(itemId, change, unitprice) {
+
+            // var unitpriceText = document.getElementById("UnitPrice-" + itemId).querySelector("span").innerText; 
+            // var unitprice = parseFloat(unitpriceText);
+
+            console.error(unitprice);
+
+            if (!isNaN(unitprice)) {
+                var oldTotalText = document.getElementById("overall-total").innerText;
+                var oldTotal = parseFloat(oldTotalText);
+                var newTotal = oldTotal + (unitprice * change);
+                document.getElementById("overall-total").innerText = newTotal.toFixed(2);
+            } 
+            else {
+                console.error("Error: Invalid unit price");
+            }
+        }
+
+    </script>
+}
+

@@ -1,0 +1,84 @@
+﻿@using Foodi.Core.Consts
+@model Foodi.Core.ViewModels.ProductCreateViewModel
+
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="row m-3 p-3 border shadow-ms rounded-3">
+    <h3 class="text-primary mt-1 mb-3"> Add Product </h3>
+
+    <div class="border-bottom me-2"></div>
+
+    <form asp-controller="Products" enctype="multipart/form-data">
+        <div class="row">
+
+            <div class="col-md-6 p-3">
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label mt-2"></label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="Price" class="form-label mt-3"></label>
+                    <input class="form-control" asp-for="Price" placeholder="Price">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="form-label mt-3"> </label>
+                    <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories" value=""
+                            data-placeholder="Select a Categories" data-minimum-results-for-search="Infinity">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label mt-3"> </label>
+                    <textarea asp-for="Description" class="form-control" placeholder="Description"> </textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Image" class="form-label mt-3"> </label>
+
+                    <input type="file" asp-for="Image" class="form-control"
+                           data-rule-extension="@FileSettings.AllowedExtensions.Replace(".",string.Empty)"
+                           data-msg-extension="Not allowed extension"
+                           data-rule-filesize="@FileSettings.MaxFileSizeInBytes"
+                           data-msg-filesize="Max allowed size is @FileSettings.MaxFileSizeInMB MB.">
+
+                    <small class="form-text text-muted">Only @FileSettings.AllowedExtensions files are allowed with max size @(FileSettings.MaxFileSizeInMB)MB.</small>
+                    <span asp-validation-for="Image" class="text-danger d-block"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg mt-4" style="width:30%;">Add</button>
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-center p-4 overflow-hidden">
+                <img class="Image-select d-none w-75 h-75 my-auto" alt="Cover" />
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/filesize-validetor.js" asp-append-version="true"></script>
+    <script src="~/js/product-form.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Image').on('change', function () {
+                $('.Image-select').attr('src', window.URL.createObjectURL(this.files[0]))
+                    .removeClass('d-none')
+            });
+        });
+    </script>
+}
+

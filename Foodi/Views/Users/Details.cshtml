@@ -1,0 +1,68 @@
+﻿@using Foodi.Core.Enums
+@model UserDetailsViewModel
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="row ms-3 me-3 mt-4 border shadow-ms rounded-3">
+
+    <div style="background-color:#f9fafd;">
+        <div class="mt-3 ms-3 mb-3">
+            <h5>Customer Details : #@Model.Id</h5>
+            <p class="fs-10 mb-2">Created : @Model.joined</p>
+            <p>Email : <a class="fw-bold" href="#!"> @Model.Email</a></p>
+        </div>
+    </div>
+ 
+    <div class="p-4 ps-5 pe-5">
+        <table class="table">
+            <thead>
+                <tr class="text-uppercase">
+                    <th style="width:;">Order</th>
+                    <th style="width:20%;">Status</th>
+                    <th style="width:;">Total</th>
+                    <th style="width:20%;">Payment Method </th>
+                    <th>Date </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr id="order-@order.Id">
+                        <td>
+                            <div class="ms-3">
+                                #@order.Id
+                            </div>
+                        </td>
+                           
+                        <td>
+                            <div class="ms-1">
+                                <span class="badge rounded-pill order-status-badge badge-@(order.Status == OrderStatus.Pending ? "primary" :
+                                                                                order.Status == OrderStatus.Completed ? "success" :"danger")">
+                                    @order.Status
+                                    <i class="fa-solid order-status-icon fa-@(order.Status == OrderStatus.Pending ? "rotate-right":
+                                                                                order.Status == OrderStatus.Completed ? "check": "ban")"></i>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ms-1">
+                                $@order.Total
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ms-3">
+                                @order.PaymentMethod
+                            </div>
+                        </td>
+                        <td>
+                            @order.OrderDate.ToString("dd/MM/yyyy")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+   
+</div>
+

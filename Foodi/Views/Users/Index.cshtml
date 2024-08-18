@@ -1,0 +1,74 @@
+﻿@using Foodi.Core.Enums
+@model IEnumerable<UserOrderViewModel>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="row ms-3 me-3 mt-4 border shadow-ms rounded-3">
+
+    <div class="overflow-hidden" style="background-color:#f9fafd;">
+        <h1 class="m-4">Users</h1>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert mt-4 mb-4 " style="background-color:#fcb57d;">
+            <div class="d-flex">
+                <i class="fa-solid fa-circle-exclamation fa-lg me-2" style="line-height:30px;"></i>
+                <h4 class="alert-heading d-flex"> No User found! </h4>
+            </div>
+            <p class="mb-0"> No Users</p>
+        </div>
+    }
+
+    else
+    {
+        <div class="p-4 ps-5 pe-5">
+            <table id="datatable" class="table">
+                <thead>
+                    <tr class="text-uppercase">
+                        <th style="width:15%;">Name</th>
+                        <th style="width:25%;">Email</th>
+                        <th style="width:15%;">Orders</th>
+                        <th style="width:18%;">Total Spent</th>
+                        <th >Last Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr id="user-@user.Id">
+                            <td>
+                                <div class="ms-2">
+                                   @*  <a class="fw-bold" href="#!"> @Model.CustomerId</a> *@
+                                    <a class="text-decoration-none text-dark" asp-action="Details" asp-route-id="@user.Id">
+                                        <h6>@user.Name</h6>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="">
+                                    @user.Email
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ms-4">
+                                   @user.NumberOfOrders
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ms-4">
+                                    @user.TotalSpent
+                                </div>
+                            </td>
+                            <td>
+                                @user.LastOrderDate
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>

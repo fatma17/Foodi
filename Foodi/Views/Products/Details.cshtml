@@ -1,0 +1,90 @@
+﻿@model Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="row pt-5 pb-5">
+    <div class="col-lg-10 mx-auto">
+        <div class="row mx-auto border rounded-3">
+
+           
+            <div class="col-lg-5 d-flex justify-content-center align-items-center">
+                <img class="w-75" src="~/images/@($"{Model.ImageName}")" alt="@Model.Name"/>
+            </div>
+           
+            <div class="col-lg-7 text-muted d-flex">
+                <div class="border-start h-75 my-auto" style="margin-right:1.2rem;">
+                </div>
+                <div class="justify-content-center align-items-center">
+                    <h3>@Model.Name</h3>
+                    <p class="fs-5">@Model.Description</p>
+                    <form asp-controller="Carts" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="foodItemId" value="@Model.Id" />
+                        <div class="d-flex justify-content-between align-items-center me-4">
+                            <h4>$<span id="product-price">@Model.Price</span></h4>
+                            <div class="d-flex justify-content-end align-items-center me-2">
+                                <button type="button" id="decrease-quantity" class="btn btn-sm btn-secondary"> <i class="fa-solid fa-minus"></i> </button>
+                                <input type="text" id="product-quantity" class="form-control text-center pt-0" name="quantity" value="1" readonly style="width:17%;" />
+                                <button type="button" id="increase-quantity" class="btn btn-sm btn-secondary"> <i class="fa-solid fa-plus"></i> </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex mt-3" style="margin-bottom:60px;">
+                            <button type="button" class="btn btn-second btn-lg me-3" style="width:45%;" onclick="location.href='@Url.Action("Menu", "Products")'">Back to Menu</button>
+                            <button type="submit" class="btn btn-orange btn-lg" style="width:45%;">Add to Cart</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var quantityElement = document.getElementById("product-quantity");
+            var increaseButton = document.getElementById("increase-quantity");
+            var decreaseButton = document.getElementById("decrease-quantity");
+            //var addToCartButton = document.getElementById("add-to-cart");
+
+
+            increaseButton.addEventListener("click", function () {
+                var currentQuantity = parseInt(quantityElement.value);
+                quantityElement.value = currentQuantity + 1;
+            });
+
+            decreaseButton.addEventListener("click", function () {
+                var currentQuantity = parseInt(quantityElement.value);
+                if (currentQuantity > 1) {
+                    quantityElement.value = currentQuantity - 1;
+                }
+            });
+
+            // addToCartButton.addEventListener("click", function () {
+            //     var productId = @Model.Id;
+            //     var quantity = parseInt(quantityElement.innerText);
+            //     addToCart(productId, quantity);
+            // });
+
+            // function addToCart(productId, quantity) {
+            //     $.ajax({
+            //         url: "/Carts/AddToCart",
+            //         type: "POST",
+            //         contentType: "application/json;charset=UTF-8",
+            //         data: JSON.stringify({ foodItemId: productId, quantity: quantity }),
+            //         success: function (response) {
+            //             alert("Product added to cart successfully!");
+                        
+            //         },
+            //         error: function (xhr, status, error) {
+            //             alert("Failed to add product to cart.");
+            //         }
+            //     });
+            // }
+
+        });
+    </script>
+}

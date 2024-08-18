@@ -1,0 +1,143 @@
+﻿@using Foodi.Core.Enums
+@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="row ms-3 me-3 mt-4 border shadow-ms rounded-3">
+
+    <div class="overflow-hidden" style="background-color:#f9fafd;">
+        <h1 class="m-4">Orders</h1>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert mt-4 mb-4 ms-4 w-75" style="background-color:#fcb57d;">
+            <div class="d-flex">
+                <i class="fa-solid fa-circle-exclamation fa-lg me-2" style="line-height:30px;"></i>
+                <h4 class="alert-heading d-flex"> No order found! </h4>
+            </div>
+            <p class="mb-0"> No Orders</p>
+        </div>
+    } 
+
+    else
+    {
+        <div class="p-4 ps-5 pe-5">
+            <table class="table">
+                <thead>
+                    <tr class="text-uppercase">
+                        <th>Order</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr id="order-@order.Id">
+                            <td>
+                                <div class="ms-2">
+                                    #@order.Id
+                                </div>
+                            </td>
+                            <td class="me-5" style="width:25%;">
+                                @order.OrderDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                <div>
+                                    <span class="badge rounded-pill order-status-badge badge-@(order.Status == OrderStatus.Pending ? "primary" : 
+                                                                                   order.Status == OrderStatus.Completed ? "success" :"danger")">@order.Status
+                                        <i class="fa-solid order-status-icon fa-@(order.Status == OrderStatus.Pending ? "rotate-right":
+                                                                                   order.Status == OrderStatus.Completed ? "check": "ban")"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ms-1">
+                                  $@order.Payment.Amount
+                                </div>
+                            </td>
+                            <td >
+                                <div class="dropdown ms-4">
+                                    <a class="text-dark" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" asp-action="Details" asp-route-id="@order.Id">View</a></li>
+                                        <li><a class="dropdown-item  js-chage-status" data-id="@order.Id" data-status="@OrderStatus.Completed">Comleted</a></li>
+                                        <li><a class="dropdown-item  js-chage-status" data-id="@order.Id" data-status="@OrderStatus.Cancelled">Cancelled</a></li>
+                                        <li><a class="dropdown-item  js-chage-status" data-id="@order.Id" data-status="@OrderStatus.Pending">pending</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.js-chage-status').on('click', function (e) {
+                e.preventDefault();
+
+                var reference = this;
+                var orderId = $(this).data("id");
+                var newStatus = $(this).data("status");
+
+                $.ajax({
+                    url: `/Orders/UpdateStatus`,
+                    method: 'POST',
+                    data: { orderId: orderId, newStatus: newStatus },
+                    success: function (response) {
+                        if (response.success) {
+
+                            var badge = $('#order-' + orderId).find('.order-status-badge');
+                            var icon = badge.find('.order-status-icon');
+                           
+                            // Update the badge text
+                            badge.contents().first()[0].textContent = newStatus;
+
+
+                            // Update the badge class
+                            badge.removeClass('badge-primary badge-success badge-danger');
+                            icon.removeClass('fa-rotate-right fa-check fa-ban');
+
+                            if (newStatus === 'Pending') {
+                                badge.addClass('badge-primary');
+                                icon.addClass('fa-rotate-right ms-1');
+                            }
+                            else if (newStatus === "@OrderStatus.Completed") {
+                                badge.addClass('badge-success');
+                                icon.addClass('fa-check ms-1');
+                            }
+                            else if (newStatus === "@OrderStatus.Cancelled") {
+                                badge.addClass('badge-danger');
+                                icon.addClass('fa-ban ms-1');
+                            }
+
+                            toastr["success"](response.message);
+                            //alert(response.message);
+                        } 
+                        else {
+                            toastr["error"](response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("A error success alert—check it out!");
+                        console.error('Error:', error);
+                    }
+                });
+                
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,110 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard - SB Admin</title>
+        <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/font-awesome/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css" />
+        <link rel="stylesheet" href="~/admin/css/styles.css" />
+    </head>
+
+    <body>
+
+        <div class="sidebar ">
+            
+            <div class="logo-content">
+                <div class="logo">
+                    <i class="fa-solid fa-burger" style="color: #f6741e;"></i>
+                    <div class=" fas logo-name">FOODI</div>
+                </div>
+                <i class="fa-solid fa-bars" id="btn"></i>
+            </div>
+                
+            <ul class="nav-list">
+                <li>
+                    <a asp-controller="Dashboard" asp-action="Index">
+                        <i class="fa-solid fa-border-all"></i>
+                        <span class="links-name">Dashboard </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Categories" asp-action="Index">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span class="links-name">Categories </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Products" asp-action="Index">
+                        <i class="fa-solid fa-burger"></i>
+                        <span class="links-name">Products </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Orders" asp-action="Index">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="links-name">Orders </span>
+                    </a>
+                </li>
+                <li>
+                <a asp-controller="Users" asp-action="Index">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span class="links-name">User </span>
+                    </a>
+                </li>
+                <li>
+                <a asp-controller="Contacts" asp-action="Index">
+                        <i class="fa-solid fa-message"></i>
+                        <span class="links-name">Contact </span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="profile-content">
+                <hr/>
+                <div class="p-2 ms-3">
+                   
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" method="post" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="dropdown-item fs-5">
+                                Logout
+                            <i class="fa-solid fa-arrow-right-from-bracket ms-2"></i>  
+                        </button>
+                    </form>
+                      
+                </div>
+            </div>
+
+        </div>
+
+        <div class="home-content">
+            <div class="container">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+        
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+
+   </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
