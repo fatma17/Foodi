@@ -2,6 +2,9 @@
 ## Foodi
 Foodi is a Food Delivery E-Commerce platform where users can browse food items, place orders, and pay using either credit or cash. The platform also includes an admin panel where the admin can manage food items, view and process orders.
 
+## Demo
+https://drive.google.com/file/d/1JQDK3pQ27zdD7GHLZcV6Bh_lkO6_579T/view?pli=1
+
 ## Features
 - **User**:
   - Browse food items.
